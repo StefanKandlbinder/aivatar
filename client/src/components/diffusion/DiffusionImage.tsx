@@ -16,7 +16,7 @@ type TProps = {
 export default function Diffussion(props: TProps) {
   return (
     <>
-      <Card variant="plain">
+      <Card variant="plain" sx={{ borderRadius: "xl" }}>
         <CardOverflow>
           <AspectRatio ratio={props.width / props.height}>
             <img height={props.height} width={props.width} src={props.src} />

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Box, Typography } from "@mui/joy";
+import { Box, LinearProgress, Typography } from "@mui/joy";
 import { SubmitHandler } from "react-hook-form";
 import DiffusionImage from "./DiffusionImage";
 import { v4 as uuidv4 } from "uuid";
@@ -112,8 +112,29 @@ export default function Diffussion() {
       <Box>
         <Typography level="h1">Catar here, is that what you want?</Typography>
         <Typography level="body-xs" marginBottom={4}>
-          A tool for generative AI that creates beautiful avatars
+          A tool for generative AI that creates beautiful catars
         </Typography>
+        <LinearProgress
+          determinate
+          variant="outlined"
+          color="neutral"
+          size="sm"
+          thickness={24}
+          value={Number(12)}
+          sx={{
+            marginBottom: 2,
+            "--LinearProgress-radius": "20px",
+            "--LinearProgress-thickness": "24px",
+          }}
+        >
+          <Typography
+            level="body-xs"
+            textColor="common.white"
+            sx={{ fontWeight: "xl", mixBlendMode: "difference" }}
+          >
+            Generating image: {`${Math.round(Number(12))}%`}
+          </Typography>
+        </LinearProgress>
         {generatedImage !== "" && (
           <DiffusionImage
             src={generatedImage}
