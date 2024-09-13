@@ -2,9 +2,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
 import "./App.css";
 import Diffussion from "@/components/diffusion/Diffusion";
-import { CssVarsProvider, extendTheme } from "@mui/joy/styles";
-import { ReactNode, useEffect, useReducer } from "react";
-import { Box } from "@mui/joy";
+import { CssVarsProvider, extendTheme, useColorScheme } from "@mui/joy/styles";
+import { ReactNode, useEffect, useReducer, useState } from "react";
+import { Box, Select, Option, Sheet } from "@mui/joy";
 import {
   DiffusionContext,
   DiffusionDispatchContext,
@@ -13,31 +13,31 @@ import {
 // Create a client
 const queryClient = new QueryClient();
 
-// function ModeSwitcher() {
-//   const { mode, setMode } = useColorScheme();
-//   const [mounted, setMounted] = React.useState(false);
+function ModeSwitcher() {
+  const { mode, setMode } = useColorScheme();
+  const [mounted, setMounted] = useState(false);
 
-//   React.useEffect(() => {
-//     setMounted(true);
-//   }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-//   if (!mounted) {
-//     return null;
-//   }
-//   return (
-//     <Select
-//       variant="soft"
-//       value={mode}
-//       onChange={(_, newMode) => {
-//         setMode(newMode);
-//       }}
-//     >
-//       <Option value="system">System</Option>
-//       <Option value="light">Light</Option>
-//       <Option value="dark">Dark</Option>
-//     </Select>
-//   );
-// }
+  if (!mounted) {
+    return null;
+  }
+  return (
+    <Select
+      variant="soft"
+      value={mode}
+      onChange={(_, newMode) => {
+        setMode(newMode);
+      }}
+    >
+      <Option value="system">System</Option>
+      <Option value="light">Light</Option>
+      <Option value="dark">Dark</Option>
+    </Select>
+  );
+}
 
 const theme = extendTheme({
   cssVarPrefix: "mode-toggle",
@@ -93,7 +93,13 @@ function LayoutGallery({ children }: TProps) {
 }
 
 function Header({ children }: TProps) {
-  return <Box>{children}</Box>;
+  return (
+    <Sheet
+      sx={{ display: "flex", alignItems: "center", justifyContent: "end" }}
+    >
+      {children}
+    </Sheet>
+  );
 }
 
 export type TDiffusion = {
@@ -178,9 +184,10 @@ function App() {
             modeStorageKey="mode-toggle-demo"
             disableNestedContext
           >
-            {/* <ModeSwitcher /> */}
             <Layout>
-              <Header>Header</Header>
+              <Header>
+                <ModeSwitcher />
+              </Header>
               <Diffussion></Diffussion>
               {/* <LayoutControls></LayoutControls>
               <LayoutContent>Layout Content</LayoutContent>
