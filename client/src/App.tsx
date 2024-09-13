@@ -4,14 +4,42 @@ import "./App.css";
 import Diffussion from "@/components/diffusion/Diffusion";
 import { CssVarsProvider, extendTheme, useColorScheme } from "@mui/joy/styles";
 import { ReactNode, useEffect, useReducer, useState } from "react";
-import { Box, Select, Option, Sheet } from "@mui/joy";
+import { Box, Select, Option, Sheet, SelectOption } from "@mui/joy";
 import {
   DiffusionContext,
   DiffusionDispatchContext,
 } from "./context/DiffusionContext";
+import Brightness2RoundedIcon from "@mui/icons-material/Brightness2";
+import LightModeRoundedIcon from "@mui/icons-material/LightMode";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 
 // Create a client
 const queryClient = new QueryClient();
+
+function renderValue(option: SelectOption<string> | null) {
+  if (!option) {
+    return null;
+  }
+
+  let icon;
+
+  switch (option.value) {
+    case "system": {
+      icon = <SettingsRoundedIcon />;
+      break;
+    }
+    case "light": {
+      icon = <LightModeRoundedIcon />;
+      break;
+    }
+    case "dark": {
+      icon = <Brightness2RoundedIcon />;
+      break;
+    }
+  }
+
+  return icon;
+}
 
 function ModeSwitcher() {
   const { mode, setMode } = useColorScheme();
@@ -31,10 +59,20 @@ function ModeSwitcher() {
       onChange={(_, newMode) => {
         setMode(newMode);
       }}
+      renderValue={renderValue}
     >
-      <Option value="system">System</Option>
-      <Option value="light">Light</Option>
-      <Option value="dark">Dark</Option>
+      <Option value="system">
+        <SettingsRoundedIcon />
+        System
+      </Option>
+      <Option value="light">
+        <LightModeRoundedIcon />
+        Light
+      </Option>
+      <Option value="dark">
+        <Brightness2RoundedIcon />
+        Dark
+      </Option>
     </Select>
   );
 }

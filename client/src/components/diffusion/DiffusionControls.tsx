@@ -78,7 +78,7 @@ export default function DiffussionControls(props: TProps) {
           control={control}
           render={({ field }) => (
             <FormControl>
-              <FormLabel required>Model</FormLabel>
+              <FormLabel>Model</FormLabel>
               <Select
                 defaultValue="stable-diffusion-v15"
                 {...field}
@@ -115,7 +115,7 @@ export default function DiffussionControls(props: TProps) {
           rules={{ required: true }}
           render={({ field }) => (
             <FormControl>
-              <FormLabel required>Prompt</FormLabel>
+              <FormLabel>Prompt</FormLabel>
               <Textarea
                 placeholder="Diffuse me..."
                 variant="outlined"
@@ -130,7 +130,7 @@ export default function DiffussionControls(props: TProps) {
           rules={{ required: true, min: 64 }}
           render={({ field }) => (
             <FormControl>
-              <FormLabel required>Width</FormLabel>
+              <FormLabel>Width</FormLabel>
               <Input
                 type="number"
                 placeholder="Width..."
@@ -147,7 +147,7 @@ export default function DiffussionControls(props: TProps) {
           rules={{ required: true, min: 64 }}
           render={({ field }) => (
             <FormControl>
-              <FormLabel required>Height</FormLabel>
+              <FormLabel>Height</FormLabel>
               <Input
                 type="number"
                 placeholder="Height..."
@@ -164,7 +164,7 @@ export default function DiffussionControls(props: TProps) {
           rules={{ required: true, min: 0 }}
           render={({ field }) => (
             <FormControl>
-              <FormLabel required>Inference Steps</FormLabel>
+              <FormLabel>Inference Steps</FormLabel>
               <Input
                 type="number"
                 placeholder="Number of intference steps..."
@@ -181,7 +181,7 @@ export default function DiffussionControls(props: TProps) {
           rules={{ required: true, min: 0 }}
           render={({ field }) => (
             <FormControl>
-              <FormLabel required>Seed</FormLabel>
+              <FormLabel>Seed</FormLabel>
               <Input
                 type="number"
                 placeholder="Seed..."

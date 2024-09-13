@@ -110,7 +110,7 @@ export default function Diffussion() {
     >
       <DiffussionControls onSubmit={onSubmit} loading={loading} />
       <Box>
-        <Typography level="h1">AIvatar here, is that what you want?</Typography>
+        <Typography level="h1">Catar here, is that what you want?</Typography>
         <Typography level="body-xs" marginBottom={4}>
           A tool for generative AI that creates beautiful avatars
         </Typography>
