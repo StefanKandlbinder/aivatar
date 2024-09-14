@@ -1,5 +1,12 @@
 import { useContext, useEffect, useState } from "react";
-import { Box, LinearProgress, Typography } from "@mui/joy";
+import {
+  Box,
+  Divider,
+  LinearProgress,
+  Sheet,
+  Textarea,
+  Typography,
+} from "@mui/joy";
 import { SubmitHandler } from "react-hook-form";
 import DiffusionImage from "./DiffusionImage";
 import { v4 as uuidv4 } from "uuid";
@@ -143,6 +150,51 @@ export default function Diffussion() {
             height={diffusionFormData.height}
           ></DiffusionImage>
         )}
+        <Box display="grid" marginTop={2} gridTemplateColumns="1fr 1fr" gap={1}>
+          <Sheet
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              padding: 2,
+              borderRadius: "sm",
+            }}
+            variant="soft"
+          >
+            <Typography color="neutral" level="title-sm">
+              Prompt
+            </Typography>
+            <Divider />
+            <Textarea
+              placeholder="What do you want to see..."
+              variant="outlined"
+              minRows={4}
+              size="sm"
+            />
+          </Sheet>
+          <Sheet
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              padding: 2,
+              borderRadius: "sm",
+            }}
+            variant="soft"
+          >
+            <Typography color="neutral" level="title-sm">
+              Negative Prompt
+            </Typography>
+            <Divider />
+            <Textarea
+              size="sm"
+              placeholder="What you don't want to see..."
+              variant="outlined"
+              minRows={4}
+              disabled
+            />
+          </Sheet>
+        </Box>
       </Box>
       <DiffusionImageGallery
         onDelete={(id) => {

@@ -36,7 +36,11 @@ function renderValue(option: SelectOption<string> | null) {
   return (
     <>
       <ListItemDecorator>
-        <Avatar sx={{ marginLeft: "-4px" }} variant="plain" size="sm">
+        <Avatar
+          sx={{ marginLeft: "-3px", marginRight: "11px" }}
+          variant="plain"
+          size="sm"
+        >
           <HuggingfaceIcon />
         </Avatar>
       </ListItemDecorator>

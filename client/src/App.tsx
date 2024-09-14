@@ -11,7 +11,7 @@ import {
 } from "./context/DiffusionContext";
 import Brightness2RoundedIcon from "@mui/icons-material/Brightness2";
 import LightModeRoundedIcon from "@mui/icons-material/LightMode";
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import ComputerRoundedIcon from "@mui/icons-material/ComputerRounded";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -25,7 +25,7 @@ function renderValue(option: SelectOption<string> | null) {
 
   switch (option.value) {
     case "system": {
-      icon = <SettingsRoundedIcon />;
+      icon = <ComputerRoundedIcon />;
       break;
     }
     case "light": {
@@ -62,7 +62,7 @@ function ModeSwitcher() {
       renderValue={renderValue}
     >
       <Option value="system">
-        <SettingsRoundedIcon />
+        <ComputerRoundedIcon />
         System
       </Option>
       <Option value="light">
@@ -93,7 +93,7 @@ function Layout({ children }: TProps) {
         gridTemplateAreas: "'header' 'main'",
         gridTemplateColumns: "1fr",
         gridTemplateRows: "64px auto",
-        maxWidth: "1200px",
+        maxWidth: "1280px",
         width: "100%",
         margin: "auto",
         padding: 2,
@@ -168,14 +168,14 @@ function diffusionsReducer(
     case "init": {
       if (!diffusions.length) {
         const newDiffusions: TDiffusion[] = action.diffusions;
-        localStorage.setItem("diffusions", JSON.stringify(newDiffusions));
+        // localStorage.setItem("diffusions", JSON.stringify(newDiffusions));
         return newDiffusions;
       }
       return diffusions;
     }
     case "added": {
       const newDiffusions: TDiffusion[] = [...diffusions, action.diffusion];
-      localStorage.setItem("diffusions", JSON.stringify(newDiffusions));
+      // localStorage.setItem("diffusions", JSON.stringify(newDiffusions));
       return newDiffusions;
     }
     case "changed": {
@@ -186,14 +186,14 @@ function diffusionsReducer(
           return diffusion;
         }
       });
-      localStorage.setItem("diffusions", JSON.stringify(newDiffusions));
+      // localStorage.setItem("diffusions", JSON.stringify(newDiffusions));
       return newDiffusions;
     }
     case "deleted": {
       const newDiffusions: TDiffusion[] = diffusions.filter(
         (diffusion) => diffusion.id !== action.id
       );
-      localStorage.setItem("diffusions", JSON.stringify(newDiffusions));
+      // localStorage.setItem("diffusions", JSON.stringify(newDiffusions));
       return newDiffusions;
     }
   }
@@ -212,6 +212,10 @@ function App() {
       diffusions: JSON.parse(localStorage.getItem("diffusions")),
     });
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("diffusions", JSON.stringify(diffusions));
+  }, [diffusions]);
 
   return (
     <QueryClientProvider client={queryClient}>
