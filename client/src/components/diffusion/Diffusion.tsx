@@ -1,13 +1,14 @@
 import { useContext, useEffect, useState } from "react";
 import {
   Box,
+  Button,
   Divider,
   LinearProgress,
   Sheet,
   Textarea,
   Typography,
 } from "@mui/joy";
-import { SubmitHandler } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import DiffusionImage from "./DiffusionImage";
 import { v4 as uuidv4 } from "uuid";
 // import { useSessionStorage } from "@uidotdev/usehooks";
@@ -17,15 +18,29 @@ import {
   DiffusionDispatchContext,
 } from "@/context/DiffusionContext";
 import DiffusionImageGallery from "./DiffusionImageGallery";
-import DiffussionControls from "./DiffusionControls";
+import DiffussionControls, { TControlsFormInput } from "./DiffusionControls";
 import { TDiffusion } from "@/App";
+import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 
-type TFormInput = Omit<TDiffusion, "id" | "data" | "createdAt">;
+type TFormInput = {
+  prompt: string;
+  negativePrompt: string;
+};
 
 export default function Diffussion() {
   // const queryClient = useQueryClient()
   const [loading, setLoading] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<TDiffusion>();
+  const [diffusionControls, setDiffusionControls] =
+    useState<TControlsFormInput>();
+
+  // const [justify, setJustify] = useState("flex-start");
+  const { control, handleSubmit } = useForm<TFormInput>({
+    defaultValues: {
+      prompt: "A cat wearing a suit riding a bike on the moon",
+      negativePrompt: "",
+    },
+  });
 
   const diffusions = useContext(DiffusionContext);
   const dispatch = useContext(DiffusionDispatchContext);
@@ -53,7 +68,10 @@ export default function Diffussion() {
     // }
   }, [diffusions]);
 
-  async function fetchDiffusion(url: string, data: TFormInput) {
+  async function fetchDiffusion(
+    url: string,
+    data: TControlsFormInput & TFormInput
+  ) {
     try {
       setLoading(true);
       const response = await fetch(`api/flux/${url}`);
@@ -68,13 +86,8 @@ export default function Diffussion() {
         diffusion: {
           id: uuidv4(),
           createdAt: new Date(),
-          model: data.model,
-          prompt: data.prompt,
-          width: data.width,
-          height: data.height,
-          numInferenceSteps: data.numInferenceSteps,
-          seed: data.seed,
           data: base64Image,
+          ...data,
         },
       });
       setLoading(false);
@@ -84,16 +97,26 @@ export default function Diffussion() {
     }
   }
 
-  const onSubmit: SubmitHandler<TFormInput> = (data) => {
-    // setGeneratedImage("")
-    const url = `${data.model}/${data.prompt}/${data.numInferenceSteps}/${data.width}/${data.height}/${data.seed}`;
+  const onChange: SubmitHandler<TControlsFormInput> = (data) => {
+    setDiffusionControls(data);
+  };
 
-    fetchDiffusion(url, data);
+  const onHandleSubmit: SubmitHandler<TFormInput> = (data) => {
+    const url = `${diffusionControls!.model}/${data.prompt}/${
+      diffusionControls!.numInferenceSteps
+    }/${diffusionControls!.width}/${diffusionControls!.height}/${
+      diffusionControls!.seed
+    }`;
+
+    fetchDiffusion(url, {
+      ...(data as TFormInput),
+      ...(diffusionControls as TControlsFormInput),
+    });
   };
 
   return (
     <>
-      <DiffussionControls onSubmit={onSubmit} loading={loading} />
+      <DiffussionControls onChange={onChange} loading={loading} />
       <Box sx={{ gridArea: "main" }}>
         <Typography level="h1">Catar here, is that what you want?</Typography>
         <Typography level="body-xs" marginBottom={4}>
@@ -103,17 +126,17 @@ export default function Diffussion() {
           determinate
           variant="outlined"
           size="sm"
-          color="neutral"
-          thickness={24}
+          color="primary"
+          thickness={20}
           value={Number(12)}
           sx={{
             marginBottom: 2,
-            "&::before": {
-              backgroundImage:
-                "linear-gradient(to right bottom, rgba(124, 58, 237, 0.9), rgba(219, 39, 119, 0.9))",
-            },
-            "--LinearProgress-radius": "20px",
-            "--LinearProgress-thickness": "24px",
+            // "&::before": {
+            //   backgroundImage:
+            //     "linear-gradient(to right bottom, rgba(124, 58, 237, 0.9), rgba(219, 39, 119, 0.9))",
+            // },
+            "--LinearProgress-radius": "16px",
+            "--LinearProgress-thickness": "20px",
           }}
         >
           <Typography
@@ -127,53 +150,162 @@ export default function Diffussion() {
         {generatedImage !== undefined && (
           <DiffusionImage {...generatedImage}></DiffusionImage>
         )}
-        <Box display="grid" marginTop={2} gridTemplateColumns="1fr 1fr" gap={1}>
+        <form onSubmit={handleSubmit(onHandleSubmit)}>
           <Sheet
+            variant="soft"
             sx={{
-              display: "flex",
-              flexDirection: "column",
+              display: "grid",
+              marginTop: 2,
               gap: 2,
               padding: 2,
+              gridTemplateColumns: "1fr 1fr",
               borderRadius: "sm",
             }}
-            variant="soft"
           >
-            <Typography color="neutral" level="title-sm">
-              Prompt
-            </Typography>
-            <Divider />
-            <Textarea
-              sx={{ fontFamily: "monospace", fontSize: "0.75rem" }}
-              placeholder="What do you want to see..."
-              variant="outlined"
-              minRows={4}
-              size="sm"
-            />
+            {/* <Box gridColumn="span 2">
+            <Box sx={{ display: "inline-flex", alignItems: "center", gap: 2 }}>
+              <RadioGroup
+                size="sm"
+                orientation="horizontal"
+                aria-labelledby="segmented-controls-example"
+                name="justify"
+                value={justify}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                  setJustify(event.target.value)
+                }
+                sx={{
+                  minHeight: 48,
+                  padding: "4px",
+                  gap: 2,
+                  borderRadius: "12px",
+                  bgcolor: "neutral.softBg",
+                  "--RadioGroup-gap": "4px",
+                  "--Radio-actionRadius": "8px",
+                }}
+              >
+                {["Text to Image", "Image to Image"].map((item) => (
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    position="relative"
+                  >
+                    <TitleRoundedIcon />
+                    <Radio
+                      key={item}
+                      color="neutral"
+                      value={item}
+                      disableIcon
+                      overlay
+                      label={item}
+                      variant="plain"
+                      sx={{ px: 2, alignItems: "center" }}
+                      slotProps={{
+                        action: ({ checked }) => ({
+                          sx: {
+                            ...(checked && {
+                              bgcolor: "background.surface",
+                              // boxShadow: "sm",
+                              "&:hover": {
+                                bgcolor: "background.surface",
+                              },
+                            }),
+                          },
+                        }),
+                      }}
+                    />
+                  </Box>
+                ))}
+              </RadioGroup>
+            </Box>
+          </Box> */}
+
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+                borderRadius: "sm",
+              }}
+            >
+              <Typography color="neutral" level="title-sm">
+                Prompt
+              </Typography>
+              <Divider />
+              <Controller
+                name="prompt"
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <Textarea
+                    sx={{ fontFamily: "monospace", fontSize: "0.75rem" }}
+                    placeholder="What do you want to see..."
+                    variant="outlined"
+                    minRows={5}
+                    size="sm"
+                    {...field}
+                  />
+                )}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+                borderRadius: "sm",
+              }}
+            >
+              <Typography color="neutral" level="title-sm">
+                Negative Prompt
+              </Typography>
+              <Divider />
+              <Textarea
+                size="sm"
+                sx={{ fontFamily: "monospace", fontSize: "0.75rem" }}
+                placeholder="What you don't want to see..."
+                variant="outlined"
+                minRows={5}
+                disabled
+              />
+            </Box>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              gridColumn="span 2"
+            >
+              <Button
+                color="primary"
+                size="sm"
+                sx={{
+                  marginTop: 1,
+                  width: "max-content",
+                }}
+                loading={false}
+                // disabled={props.loading}
+                variant="outlined"
+              >
+                Reset
+              </Button>
+              <Button
+                size="sm"
+                startDecorator={<AutoAwesomeRoundedIcon />}
+                sx={{
+                  marginTop: 1,
+                  width: "max-content",
+                  // backgroundImage:
+                  //   "linear-gradient(to right bottom, rgba(124, 58, 237, 0.9), rgba(219, 39, 119, 0.9))",
+                }}
+                loading={false}
+                // disabled={props.loading}
+                type="submit"
+                variant="solid"
+              >
+                Run
+              </Button>
+            </Box>
           </Sheet>
-          <Sheet
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-              padding: 2,
-              borderRadius: "sm",
-            }}
-            variant="soft"
-          >
-            <Typography color="neutral" level="title-sm">
-              Negative Prompt
-            </Typography>
-            <Divider />
-            <Textarea
-              size="sm"
-              sx={{ fontFamily: "monospace", fontSize: "0.75rem" }}
-              placeholder="What you don't want to see..."
-              variant="outlined"
-              minRows={4}
-              disabled
-            />
-          </Sheet>
-        </Box>
+        </form>
       </Box>
       <DiffusionImageGallery
         onDelete={(id) => {

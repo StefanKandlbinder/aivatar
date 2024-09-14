@@ -1,11 +1,5 @@
 import { TDiffusion } from "@/App";
-import {
-  AspectRatio,
-  Card,
-  CardContent,
-  CardOverflow,
-  Typography,
-} from "@mui/joy";
+import { AspectRatio, Card, CardOverflow } from "@mui/joy";
 
 type TProps = TDiffusion;
 

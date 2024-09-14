@@ -153,6 +153,7 @@ export type TDiffusion = {
   createdAt: Date;
   model: string;
   prompt: string;
+  negativePrompt: string;
   width: number;
   height: number;
   numInferenceSteps: number;
