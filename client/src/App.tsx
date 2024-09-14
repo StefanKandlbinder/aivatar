@@ -12,6 +12,7 @@ import {
 import Brightness2RoundedIcon from "@mui/icons-material/Brightness2";
 import LightModeRoundedIcon from "@mui/icons-material/LightMode";
 import ComputerRoundedIcon from "@mui/icons-material/ComputerRounded";
+import "@fontsource/manrope";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -54,6 +55,7 @@ function ModeSwitcher() {
   }
   return (
     <Select
+      indicator={null}
       variant="soft"
       value={mode}
       onChange={(_, newMode) => {
@@ -79,6 +81,10 @@ function ModeSwitcher() {
 
 const theme = extendTheme({
   cssVarPrefix: "mode-toggle",
+  fontFamily: {
+    display: "Manrope",
+    body: "Manrope",
+  },
 });
 
 type TProps = {
@@ -90,14 +96,15 @@ function Layout({ children }: TProps) {
     <Box
       sx={{
         display: "grid",
-        gridTemplateAreas: "'header' 'main'",
-        gridTemplateColumns: "1fr",
-        gridTemplateRows: "64px auto",
-        maxWidth: "1280px",
+        gridTemplateAreas: "'header header header' 'sideleft main sideright'",
+        gridTemplateColumns:
+          "270px fit-content(calc(100% - 210px - 270px)) 210px",
+        maxWidth: "1600px",
         width: "100%",
         margin: "auto",
         padding: 2,
         gap: 3,
+        justifyContent: "center",
       }}
     >
       {children}
@@ -105,35 +112,36 @@ function Layout({ children }: TProps) {
   );
 }
 
-function LayoutControls({ children }: TProps) {
-  return (
-    <Box
-      sx={{
-        display: "grid",
-        gridTemplateArea: "controls",
-      }}
-    >
-      {children}
-    </Box>
-  );
-}
+// function LayoutSideLeft({ children }: TProps) {
+//   return (
+//     <Box
+//       sx={{
+//         display: "grid",
+//         gridArea: "sideleft",
+//       }}
+//     >
+//       {children}
+//     </Box>
+//   );
+// }
 
-function LayoutContent({ children }: TProps) {
-  return (
-    <Box sx={{ display: "grid", gridTemplateArea: "content" }}>{children}</Box>
-  );
-}
+// function LayoutMain({ children }: TProps) {
+//   return <Box sx={{ display: "grid", gridArea: "main" }}>{children}</Box>;
+// }
 
-function LayoutGallery({ children }: TProps) {
-  return (
-    <Box sx={{ display: "grid", gridTemplateArea: "gallery" }}>{children}</Box>
-  );
-}
+// function LayoutSideRight({ children }: TProps) {
+//   return <Box sx={{ display: "grid", gridArea: "sideright" }}>{children}</Box>;
+// }
 
 function Header({ children }: TProps) {
   return (
     <Sheet
-      sx={{ display: "flex", alignItems: "center", justifyContent: "end" }}
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "end",
+        gridArea: "header",
+      }}
     >
       {children}
     </Sheet>
@@ -209,7 +217,7 @@ function App() {
   useEffect(() => {
     dispatch({
       type: "init",
-      diffusions: JSON.parse(localStorage.getItem("diffusions")),
+      diffusions: JSON.parse(localStorage.getItem("diffusions")!),
     });
   }, []);
 
@@ -231,9 +239,6 @@ function App() {
                 <ModeSwitcher />
               </Header>
               <Diffussion></Diffussion>
-              {/* <LayoutControls></LayoutControls>
-              <LayoutContent>Layout Content</LayoutContent>
-              <LayoutGallery>Layout Gallery</LayoutGallery> */}
             </Layout>
           </CssVarsProvider>
         </DiffusionDispatchContext.Provider>

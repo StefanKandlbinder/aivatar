@@ -16,6 +16,7 @@ export default function DiffusionImageGallery(props: TProps) {
         gap: 2,
         padding: 2,
         borderRadius: "sm",
+        gridArea: "sideright",
       }}
       variant="soft"
     >

@@ -1,3 +1,4 @@
+import { TDiffusion } from "@/App";
 import {
   AspectRatio,
   Card,
@@ -6,20 +7,18 @@ import {
   Typography,
 } from "@mui/joy";
 
-type TProps = {
-  src: string;
-  title: string;
-  width: number;
-  height: number;
-};
+type TProps = TDiffusion;
 
 export default function Diffussion(props: TProps) {
   return (
     <>
       <Card variant="plain" sx={{ borderRadius: "xl" }}>
         <CardOverflow>
-          <AspectRatio ratio={props.width / props.height}>
-            <img height={props.height} width={props.width} src={props.src} />
+          <AspectRatio
+            ratio={props.width / props.height}
+            sx={{ maxWidth: props.width }}
+          >
+            <img height={props.height} width={props.width} src={props.data} />
           </AspectRatio>
         </CardOverflow>
         {/* <CardContent>

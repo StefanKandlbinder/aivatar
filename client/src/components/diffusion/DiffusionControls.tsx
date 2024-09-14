@@ -66,7 +66,10 @@ export default function DiffussionControls(props: TProps) {
   };
 
   return (
-    <form style={{ display: "grid" }} onSubmit={handleSubmit(onSubmit)}>
+    <form
+      style={{ display: "grid", gridArea: "sideleft" }}
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <Sheet
         sx={{
           display: "flex",
@@ -84,6 +87,7 @@ export default function DiffussionControls(props: TProps) {
             <FormControl>
               <FormLabel>Model</FormLabel>
               <Select
+                size="sm"
                 defaultValue="stable-diffusion-v15"
                 {...field}
                 renderValue={renderValue}
@@ -121,6 +125,7 @@ export default function DiffussionControls(props: TProps) {
             <FormControl>
               <FormLabel>Prompt</FormLabel>
               <Textarea
+                size="sm"
                 placeholder="Diffuse me..."
                 variant="outlined"
                 {...field}
@@ -136,6 +141,7 @@ export default function DiffussionControls(props: TProps) {
             <FormControl>
               <FormLabel>Width</FormLabel>
               <Input
+                size="sm"
                 type="number"
                 placeholder="Width..."
                 variant="outlined"
@@ -153,6 +159,7 @@ export default function DiffussionControls(props: TProps) {
             <FormControl>
               <FormLabel>Height</FormLabel>
               <Input
+                size="sm"
                 type="number"
                 placeholder="Height..."
                 variant="outlined"
@@ -170,6 +177,7 @@ export default function DiffussionControls(props: TProps) {
             <FormControl>
               <FormLabel>Inference Steps</FormLabel>
               <Input
+                size="sm"
                 type="number"
                 placeholder="Number of intference steps..."
                 variant="outlined"
@@ -187,6 +195,7 @@ export default function DiffussionControls(props: TProps) {
             <FormControl>
               <FormLabel>Seed</FormLabel>
               <Input
+                size="sm"
                 type="number"
                 placeholder="Seed..."
                 variant="outlined"
@@ -197,6 +206,7 @@ export default function DiffussionControls(props: TProps) {
           )}
         />
         <Button
+          size="sm"
           startDecorator={<AutoAwesomeRoundedIcon />}
           sx={{ marginTop: 1 }}
           loading={props.loading}

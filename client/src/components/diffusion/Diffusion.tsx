@@ -25,29 +25,16 @@ type TFormInput = Omit<TDiffusion, "id" | "data" | "createdAt">;
 export default function Diffussion() {
   // const queryClient = useQueryClient()
   const [loading, setLoading] = useState(false);
-  const [generatedImage, setGeneratedImage] = useState("");
-  const [diffusionuUrl, setDiffusionUrl] = useState("");
-  const [diffusionFormData, setDiffusionFormData] = useState<TFormInput>({
-    model: "",
-    prompt: "",
-    width: 512,
-    height: 512,
-    numInferenceSteps: 0,
-    seed: 0,
-  });
+  const [generatedImage, setGeneratedImage] = useState<TDiffusion>();
 
   const diffusions = useContext(DiffusionContext);
   const dispatch = useContext(DiffusionDispatchContext);
-
-  // useEffect(() => {
-  //   console.log(diffusions);
-  // }, [diffusions]);
 
   useEffect(() => {
     console.info("Diffusions: ", diffusions);
 
     if (diffusions.length > 0) {
-      setGeneratedImage(diffusions[diffusions.length - 1].data);
+      setGeneratedImage(diffusions[diffusions.length - 1]);
     }
     // if (diffusionuUrl !== "") {
     //   const eventSource = new EventSource(`api/flux/stream/${diffusionuUrl}`);
@@ -100,23 +87,14 @@ export default function Diffussion() {
   const onSubmit: SubmitHandler<TFormInput> = (data) => {
     // setGeneratedImage("")
     const url = `${data.model}/${data.prompt}/${data.numInferenceSteps}/${data.width}/${data.height}/${data.seed}`;
-    setDiffusionFormData(data);
-    setDiffusionUrl(url);
 
     fetchDiffusion(url, data);
   };
 
   return (
-    <Box
-      sx={{
-        display: "grid",
-        gridTemplateAreas: "'controls image gallery'",
-        gridTemplateColumns: "270px auto 210px",
-        gap: 4,
-      }}
-    >
+    <>
       <DiffussionControls onSubmit={onSubmit} loading={loading} />
-      <Box>
+      <Box sx={{ gridArea: "main" }}>
         <Typography level="h1">Catar here, is that what you want?</Typography>
         <Typography level="body-xs" marginBottom={4}>
           A tool for generative AI that creates beautiful catars
@@ -124,12 +102,16 @@ export default function Diffussion() {
         <LinearProgress
           determinate
           variant="outlined"
-          color="neutral"
           size="sm"
+          color="neutral"
           thickness={24}
           value={Number(12)}
           sx={{
             marginBottom: 2,
+            "&::before": {
+              backgroundImage:
+                "linear-gradient(to right bottom, rgba(124, 58, 237, 0.9), rgba(219, 39, 119, 0.9))",
+            },
             "--LinearProgress-radius": "20px",
             "--LinearProgress-thickness": "24px",
           }}
@@ -142,13 +124,8 @@ export default function Diffussion() {
             Generating image: {`${Math.round(Number(12))}%`}
           </Typography>
         </LinearProgress>
-        {generatedImage !== "" && (
-          <DiffusionImage
-            src={generatedImage}
-            title={diffusionFormData.prompt}
-            width={diffusionFormData.width}
-            height={diffusionFormData.height}
-          ></DiffusionImage>
+        {generatedImage !== undefined && (
+          <DiffusionImage {...generatedImage}></DiffusionImage>
         )}
         <Box display="grid" marginTop={2} gridTemplateColumns="1fr 1fr" gap={1}>
           <Sheet
@@ -166,6 +143,7 @@ export default function Diffussion() {
             </Typography>
             <Divider />
             <Textarea
+              sx={{ fontFamily: "monospace", fontSize: "0.75rem" }}
               placeholder="What do you want to see..."
               variant="outlined"
               minRows={4}
@@ -188,6 +166,7 @@ export default function Diffussion() {
             <Divider />
             <Textarea
               size="sm"
+              sx={{ fontFamily: "monospace", fontSize: "0.75rem" }}
               placeholder="What you don't want to see..."
               variant="outlined"
               minRows={4}
@@ -205,6 +184,6 @@ export default function Diffussion() {
         }}
         diffusions={diffusions}
       />
-    </Box>
+    </>
   );
 }
